@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05070a">
+<title>Órbita · Sistema Solar del Tiempo</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+  <div class="brand"><h1>ÓRBITA</h1><span>Tu semana como sistema solar</span><button type="button" id="help" class="helpLink">¿Cómo funciona? · Tutorial</button></div>
+  <div id="score"><b></b><span></span></div>
+</header>
+<nav class="tabs" aria-label="Secciones">
+  <button data-v="cielo" class="on" aria-label="Cielo"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="2.6" fill="currentColor"/><ellipse cx="12" cy="12" rx="9.6" ry="4.6" transform="rotate(-25 12 12)"/><circle cx="20.6" cy="7.9" r="1.5" fill="currentColor"/></svg><span>Cielo</span></button>
+  <button data-v="bit" aria-label="Bitácora"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg><span>Bitácora</span></button>
+  <button data-v="sem" aria-label="Semana"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8"/><path d="M20 4v4h-4"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 16"/><path d="M4 20v-4h4"/></svg><span>Semana</span></button>
+  <button data-v="act" aria-label="Planetas"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="13" r="6.5"/><path d="M5 11.5c4 1.6 8 1.6 12 0"/><circle cx="19" cy="5" r="1.7" fill="currentColor"/></svg><span>Planetas</span></button>
+  <button data-v="bal" aria-label="Balance"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="12" width="4" height="8" rx="1"/><rect x="10" y="5" width="4" height="15" rx="1"/><rect x="16" y="9" width="4" height="11" rx="1"/></svg><span>Balance</span></button>
+  <button data-v="cos" aria-label="Cosmos"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19.5 14.5A8.5 8.5 0 1 1 9.5 4.5a7 7 0 0 0 10 10z"/><path d="M18 3v4M16 5h4"/></svg><span>Cosmos</span></button>
+  <button data-v="not" aria-label="Notas"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/><path d="M18.5 2.7a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/><path d="M8 9h3"/></svg><span>Notas</span></button>
+</nav>
+<main>
+  <section id="v-cielo" class="view on">
+    <div id="now" class="now"></div>
+    <div class="per"></div>
+    <div class="sky"><canvas id="sky" aria-label="Sistema solar de actividades"></canvas></div>
+    <ul id="legend"></ul>
+  </section>
+  <section id="v-bit" class="view">
+    <div class="rowhead">
+      <div class="weeknav"><button id="bPrev" aria-label="Semana anterior">‹</button><span id="bLbl"></span><button id="bNext" aria-label="Semana siguiente">›</button></div>
+      <div class="weeknav"><button id="bHoy">Hoy</button><input type="date" id="bGo" aria-label="Ir a una fecha"></div>
+    </div>
+    <div id="dTabs" class="dtabs"></div>
+    <div id="blocks"></div>
+    <button id="addD" class="go fab">+ Nuevo bloque</button>
+  </section>
+  <section id="v-sem" class="view">
+    <h2>Semana regular</h2>
+    <p class="hint">Tu semana tipo. La bitácora la copia a cada fecha; ahí podés cambiar días puntuales sin tocar esta.</p>
+    <div id="wTabs" class="dtabs"></div>
+    <div id="wBlocks"></div>
+    <button id="addW" class="go fab">+ Nuevo bloque</button>
+  </section>
+  <section id="v-act" class="view">
+    <div class="rowhead"><h2>Planetas</h2><button id="addA" class="go">+ Nuevo</button></div>
+    <p class="hint" id="actHint"></p>
+    <ul id="acts"></ul>
+  </section>
+  <section id="v-bal" class="view">
+    <h2>Balance</h2>
+    <div class="per"></div>
+    <div id="stack" class="stack"></div>
+    <div id="review"></div>
+    <div class="data"><button id="exp">Exportar datos</button><label class="btn">Importar datos<input type="file" id="imp" accept=".json" hidden></label><button id="expPdf">Cronograma PDF</button></div>
+    <p class="hint">Exportar descarga un archivo .json con toda tu agenda (planetas, semana regular, bitácora y notas). Importar reemplaza los datos actuales por los de ese archivo, así que elegí uno que hayas exportado antes. Hacé un respaldo de vez en cuando, sobre todo antes de cambiar de dispositivo o borrar datos del navegador.</p>
+    <p class="hint" id="pdfHint"></p>
+  </section>
+  <section id="v-cos" class="view">
+    <div class="rowhead"><h2>Cosmos</h2><button id="cLoc">Ubicación</button></div>
+    <p class="hint" id="cPlace"></p>
+    <div class="weeknav cnav"><button id="cPrev" aria-label="Día anterior">‹</button><span id="cLbl"></span><button id="cNext" aria-label="Día siguiente">›</button><button id="cHoy">Hoy</button></div>
+    <div class="cards"><article id="cSun" class="card"></article><article id="cMoon" class="card"></article></div>
+    <h3 class="sec">Planetas</h3>
+    <div id="cPl" class="plist"></div>
+    <h3 class="sec">Un día bajo el cielo</h3>
+    <div id="cTl" class="tl"></div>
+    <h3 class="sec">Mapa del cielo</h3>
+    <div class="sky skym"><canvas id="cmap" aria-label="Mapa del cielo sobre tu ubicación"></canvas></div>
+    <div class="skyctl"><input type="range" id="cT" min="0" max="1435" step="5" aria-label="Hora del día"><span id="cTl2"></span><button id="cNow">Ahora</button></div>
+    <p class="hint" id="cInfo"></p>
+    <p class="hint">Mirando hacia arriba: el Este queda a la izquierda. Posiciones calculadas en el dispositivo, sin conexión (precisión de baja resolución: minutos para el Sol, algo más para la Luna). Horarios en la hora de tu dispositivo.</p>
+    <h3 class="sec">Oráculo</h3>
+    <p class="hint">Lectura del momento que elegiste: la fecha de arriba y la hora del deslizador del mapa.</p>
+    <div id="cOr" class="orc"></div>
+  </section>
+  <section id="v-not" class="view">
+    <div class="rowhead"><h2>Notas</h2><span class="hint" id="nCount"></span></div>
+    <form id="nForm" class="nbox">
+      <textarea id="nText" rows="4" maxlength="4000" placeholder="¿Qué querés dejar registrado?" aria-label="Nueva nota"></textarea>
+      <div class="nbar">
+        <label>Fecha y hora<input type="datetime-local" id="nWhen" required></label>
+        <button type="button" id="nNow">Ahora</button>
+        <button class="go" id="nAdd">Guardar nota</button>
+      </div>
+      <p class="hint" id="nLen">Ctrl + Enter para guardar. Si no cambiás la fecha, queda con la hora exacta en que la guardás.</p>
+    </form>
+    <div class="nfilter">
+      <input type="search" id="nQ" placeholder="Buscar en las notas" aria-label="Buscar en las notas">
+      <input type="date" id="nD" aria-label="Ver un día">
+      <button type="button" id="nClr">Ver todas</button>
+    </div>
+    <p class="hint">Últimos 30 días · tocá un día para ver solo ese día.</p>
+    <div id="nMap" class="nmap"></div>
+    <div id="nTl" class="ntl"></div>
+    <div class="data"><button type="button" id="nTxt">Exportar notas (.txt)</button></div>
+    <p class="hint">Las notas se guardan junto con la agenda y viajan en el respaldo de Balance.</p>
+  </section>
+</main>
+<dialog id="dB"><form id="fB">
+  <h3 id="dBt">Nuevo bloque</h3>
+  <label>Actividad<select id="bA"></select></label>
+  <label>Título (opcional)<input id="bT" maxlength="40" placeholder="Ej. Uber, Cena y familia"></label>
+  <div class="two"><label>Desde<input type="time" id="bS" required></label><label>Hasta<input type="time" id="bE" required></label></div>
+  <div id="bWK"><div class="hint">Días de la semana</div><div class="chips" id="bD"></div></div>
+  <div id="bDT">
+    <div class="two"><label>Fecha<input type="date" id="bF"></label><label id="bUw">Hasta la fecha (opcional)<input type="date" id="bU"></label></div>
+    <label id="bRw">Se repite<select id="bR"><option value="">No</option><option value="m">Todos los meses</option><option value="y">Todos los años</option></select></label>
+  </div>
+  <p class="hint" id="bH"></p>
+  <menu><button type="button" class="danger" id="bDel">Eliminar</button><button type="button" id="bX">Cancelar</button><button class="go">Guardar</button></menu>
+</form></dialog>
+<dialog id="dA"><form id="fA">
+  <h3 id="dAt">Nuevo planeta</h3>
+  <label>Nombre<input id="aN" maxlength="40" required></label>
+  <label>Color<input type="color" id="aC" value="#27f5c9"></label>
+  <label class="chk"><input type="checkbox" id="aK"> Va en el centro (el sol)</label>
+  <menu><button type="button" class="danger" id="aDel">Eliminar</button><button type="button" id="aX">Cancelar</button><button class="go">Guardar</button></menu>
+</form></dialog>
+<dialog id="dL"><form id="fL">
+  <h3>Ubicación del cielo</h3>
+  <label>Nombre (opcional)<input id="lN" maxlength="40" placeholder="Ej. Villa General Belgrano"></label>
+  <div class="two"><label>Latitud<input type="number" id="lLa" step="any" min="-90" max="90" required></label><label>Longitud<input type="number" id="lLo" step="any" min="-180" max="180" required></label></div>
+  <button type="button" id="lGps">Usar mi ubicación</button>
+  <p class="hint" id="lH"></p>
+  <menu><button type="button" id="lX">Cancelar</button><button class="go">Guardar</button></menu>
+</form></dialog>
+<dialog id="dN"><form id="fN">
+  <h3>Editar nota</h3>
+  <label>Nota<textarea id="eT" rows="6" maxlength="4000" required></textarea></label>
+  <label>Fecha y hora<input type="datetime-local" id="eW" required></label>
+  <p class="hint" id="eM"></p>
+  <menu><button type="button" class="danger" id="eDel">Eliminar</button><button type="button" id="eX">Cancelar</button><button class="go">Guardar</button></menu>
+</form></dialog>
+<dialog id="dT">
+  <p class="hint" id="tCount"></p>
+  <h3 id="tTitle"></h3>
+  <div id="tBody"></div>
+  <menu><button type="button" id="tSkip" class="ghost">Cerrar</button><button type="button" id="tPrev" hidden>Anterior</button><button type="button" class="go" id="tNext">Siguiente</button></menu>
+</dialog>
+<script src="js/cosmos.js"></script>
+<script src="js/oraculo.js"></script>
+<script src="js/pdf.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
